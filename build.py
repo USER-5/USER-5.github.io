@@ -10,6 +10,7 @@ from glob import glob
 
 this_script = Path(os.path.dirname(os.path.realpath(__file__)))
 photos = this_script / "src/photos"
+programming = this_script / "src/programming"
 static = this_script / "src/static"
 destination = this_script / "dist"
 if(destination.exists()):
@@ -21,6 +22,10 @@ os.mkdir(destination / "images")
 photos_page = ''
 with open(photos / "container.html") as f:
     photos_page = f.read()
+
+programming_page = ''
+with open(photos / "container.html") as f:
+    programming_page = f.read()
 
 def is_valid_photo_date_folder(photo_date_folder: Path):
     return os.path.isdir(photo_date_folder) and os.path.isfile(photo_date_folder / "article.html")
@@ -44,3 +49,22 @@ photos_page = photos_page.replace("<!-- !!Content!! -->", photos_page_content)
 
 with open(destination / "photos.html", "w+") as f:
     f.write(photos_page)
+
+programming_date_folders = [Path(programming/f) for f in os.listdir(programming) if Path(programming/f).is_dir()]
+programming_date_folders.sort()
+programming_date_folders.reverse()
+
+programming_page_content = ''
+for programming_date_folder in programming_date_folders:
+
+    for article in glob(str(programming_date_folder) + "/*.html"):
+        print(article)
+        with open(article) as f:
+            programming_page_content += "<article>"
+            programming_page_content += f.read()
+            programming_page_content += "</article>"
+
+programming_page = programming_page.replace("<!-- !!Content!! -->", programming_page_content)
+
+with open(destination / "programming.html", "w+") as f:
+    f.write(programming_page)
