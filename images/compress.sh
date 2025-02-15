@@ -17,5 +17,5 @@ fi
 
 for maxwidth in 650 1300 1950; do
 	maxheight=$((maxwidth * 2))
-	magick "$filename" -resize "${maxwidth}x${maxheight}" "$basename-$maxwidth".jpg
+	magick "$filename" -resize "${maxheight}x${maxwidth}" "$basename-$maxwidth".jpg
 done
