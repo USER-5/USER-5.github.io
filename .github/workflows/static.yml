@@ -39,6 +39,9 @@ jobs:
           python-version: '3.9'
       - name: Set up ImageMagick
         uses: mfinelli/setup-imagemagick@v1
+        with:
+          cache: true
+          install-libfuse2: true
       - name: Build Pages
         run: python build.py
       - name: Setup Pages
