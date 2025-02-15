@@ -27,7 +27,9 @@ photo_date_folders = (Path(photos/f) for f in os.listdir(photos) if is_valid_pho
 photos_page_content = ''
 for photo_date_folder in photo_date_folders:
     with open(photo_date_folder / "article.html") as f:
+        photos_page_content += "<article>"
         photos_page_content += f.read()
+        photos_page_content += "</article>"
 
 photos_page = photos_page.replace("<!-- !!Content!! -->", photos_page_content)
 
