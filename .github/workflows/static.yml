@@ -38,6 +38,7 @@ jobs:
         with:
           python-version: '3.9'
       - name: Build Pages
+        uses: mfinelli/setup-imagemagick@v1
         run: python build.py
       - name: Setup Pages
         uses: actions/configure-pages@v5
