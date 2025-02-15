@@ -32,7 +32,7 @@ jobs:
       - name: Checkout
         uses: nschloe/action-cached-lfs-checkout@v1
       - name: LFS Checkout
-        run: git lfs checkout
+        run: GIT_TRACE=1 git lfs checkout
       - name: Debug
         run: cat src/photos/2024-04-03/images/IMG_7617.jpg
       - name: Set up Python
