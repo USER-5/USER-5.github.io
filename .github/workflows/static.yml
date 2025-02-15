@@ -40,7 +40,7 @@ jobs:
       - name: Set up ImageMagick
         uses: mfinelli/setup-imagemagick@v5
       - name: Debug
-        run: cat src/photos/2024-04-03/IMG_7617.jpg
+        run: cat src/photos/2024-04-03/images/IMG_7617.jpg
       - name: Build Pages
         run: python build.py
       - name: Setup Pages
