@@ -31,12 +31,6 @@ jobs:
     steps:
       - name: Checkout
         uses: nschloe/action-cached-lfs-checkout@v1
-      - name: Debug
-        run: git lfs fetch
-      - name: LFS Checkout
-        run: git lfs checkout
-      - name: LFS List
-        run: git lfs ls-files
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
