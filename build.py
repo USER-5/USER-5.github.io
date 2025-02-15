@@ -22,7 +22,9 @@ with open(photos / "container.html") as f:
 def is_valid_photo_date_folder(photo_date_folder: Path):
     return os.path.isdir(photo_date_folder) and os.path.isfile(photo_date_folder / "article.html")
 
-photo_date_folders = (Path(photos/f) for f in os.listdir(photos) if is_valid_photo_date_folder(photos / f))
+photo_date_folders = [Path(photos/f) for f in os.listdir(photos) if is_valid_photo_date_folder(photos / f)]
+photo_date_folders.sort()
+photo_date_folders.reverse()
 
 photos_page_content = ''
 for photo_date_folder in photo_date_folders:
