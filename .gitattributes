@@ -1,3 +1,1 @@
-images/P1002681-1300.jpg filter=lfs diff=lfs merge=lfs -text
-images/P1002681-650.jpg filter=lfs diff=lfs merge=lfs -text
-images/P1002681.jpg filter=lfs diff=lfs merge=lfs -text
+src/*.jpg filter=lfs diff=lfs merge=lfs -text

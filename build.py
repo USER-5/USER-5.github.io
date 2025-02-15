@@ -2,6 +2,8 @@
 import os
 from pathlib import Path
 from shutil import copytree, rmtree
+from subprocess import call
+from glob import glob
 
 # I'm going to try to keep this to assembling files by concatenation
 # Let's see how that goes...
@@ -14,6 +16,7 @@ if(destination.exists()):
     rmtree(destination)
 
 copytree(static, destination)
+os.mkdir(destination / "images")
 
 photos_page = ''
 with open(photos / "container.html") as f:
@@ -28,6 +31,10 @@ photo_date_folders.reverse()
 
 photos_page_content = ''
 for photo_date_folder in photo_date_folders:
+
+    for image in glob(f"{photo_date_folder}/images/*.jpg"):
+        call([this_script / 'prepare_images.sh',  image, destination / "images"])
+
     with open(photo_date_folder / "article.html") as f:
         photos_page_content += "<article>"
         photos_page_content += f.read()
