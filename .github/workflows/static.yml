@@ -37,8 +37,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
-      - name: Build Pages
+      - name: Set up ImageMagick
         uses: mfinelli/setup-imagemagick@v1
+      - name: Build Pages
         run: python build.py
       - name: Setup Pages
         uses: actions/configure-pages@v5
