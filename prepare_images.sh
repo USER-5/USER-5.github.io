@@ -5,7 +5,7 @@ basefilename=$(basename "${filename%.*}")
 
 destination="$2"
 
-if ! command -v magick; then
+if ! command -v magick > /dev/null; then
 	echo "ERROR"
 	echo "imagemagick is required. Try running from a nix shell:"
 	echo "  nix-shell -p imagemagick"
