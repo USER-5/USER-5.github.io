@@ -4,9 +4,14 @@ from pathlib import Path
 from shutil import copytree, rmtree
 from subprocess import call
 from glob import glob
+from urllib.parse import quote
+import sys
 
 # I'm going to try to keep this to assembling files by concatenation
 # Let's see how that goes...
+
+# If set, don't rebuild everything from scratch
+refresh = len(sys.argv) > 1 and  sys.argv[1] == "refresh"
 
 print("Preparing directories")
 this_script = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -14,11 +19,14 @@ photos = this_script / "src/photos"
 programming = this_script / "src/programming"
 static = this_script / "src/static"
 destination = this_script / "dist"
-if(destination.exists()):
+if destination.exists() and not refresh:
     rmtree(destination)
 
-copytree(static, destination)
-os.mkdir(destination / "images")
+if not refresh:
+    copytree(static, destination)
+
+os.makedirs(destination / "images", exist_ok=True)
+os.makedirs(destination / "programming", exist_ok=True)
 
 print("Building photos page")
 photos_page = ''
@@ -36,6 +44,9 @@ photos_page_content = ''
 for photo_date_folder in photo_date_folders:
     print(f" Processing {photo_date_folder}")
     for image in glob(f"{photo_date_folder}/images/*.jpg"):
+        if refresh and (destination / "images" / Path(image).name).exists():
+            print(f"  Skipping image {image}")
+            continue
         print(f"  Converting image {image}")
         call([this_script / 'prepare_images.sh',  image, destination / "images"])
 
@@ -56,23 +67,35 @@ programming_page = ''
 with open(photos / "container.html") as f:
     programming_page = f.read()
 
-programming_date_folders = [Path(programming/f) for f in os.listdir(programming) if Path(programming/f).is_dir()]
-programming_date_folders.sort()
-programming_date_folders.reverse()
+programming_folders = [Path(programming/f) for f in os.listdir(programming) if Path(programming/f).is_dir()]
+programming_folders.sort()
+programming_folders.reverse()
 
-programming_page_content = ''
-for programming_date_folder in programming_date_folders:
-    print(f" Processing {programming_date_folder}")
+programming_index_content = '<h2>Articles:</h2><ul>'
+for programming_folder in programming_folders:
+    article_title = programming_folder.stem
+    article_filepath = "/programming/" + quote(article_title) + ".html"
+    programming_index_content += f'<li><a href="{quote(article_filepath)}">{article_title}</a></li>'
+
+    print(f" Processing {programming_folder} ({article_title})")
 
     print("  Reading article")
-    for article in glob(str(programming_date_folder) + "/*.html"):
+    programming_page_content = ''
+    for article in glob(str(programming_folder) + "/*.html"):
         with open(article) as f:
             programming_page_content += "<article>"
             programming_page_content += f.read()
             programming_page_content += "</article>"
+    programming_page_content = programming_page.replace("<!-- !!Content!! -->", programming_page_content)
 
-programming_page = programming_page.replace("<!-- !!Content!! -->", programming_page_content)
+    print("  Writing article page")
+    with open(str(destination) + article_filepath, "w+") as f:
+        f.write(programming_page_content)
 
-print("Writing programming page")
+programming_index_content += '</ul>'
+programming_index_page = programming_page.replace("<!-- !!Content!! -->", programming_index_content)
+
+print("Writing article page")
 with open(destination / "programming.html", "w+") as f:
-    f.write(programming_page)
+    f.write(programming_index_page)
+
