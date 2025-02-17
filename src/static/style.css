@@ -31,10 +31,10 @@ code {
 
 img {
   max-width: 100%;
-  .horizontal {
-    aspect-ratio: 4/3;
+  &.horizontal {
+    aspect-ratio: 4 / 3;
   }
-  .vertical {
-    aspect-ratio: 3/4;
+  &.vertical {
+    aspect-ratio: 3 / 4;
   }
 }
