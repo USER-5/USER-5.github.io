@@ -15,6 +15,5 @@ fi
 cp "$filename" "$destination"
 
 for maxwidth in 650 1300 1950; do
-	maxheight=$((maxwidth * 2))
-	magick "$filename" -resize "${maxheight}x${maxwidth}" "$destination/$basefilename-$maxwidth".jpg
+	magick "$filename" -auto-orient -resize "${maxwidth}x" "$destination/$basefilename-$maxwidth".avif
 done
