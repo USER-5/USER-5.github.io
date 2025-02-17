@@ -64,7 +64,7 @@ with open(destination / "photos.html", "w+") as f:
 
 print("Building programming page")
 programming_page = ''
-with open(photos / "container.html") as f:
+with open(programming / "container.html") as f:
     programming_page = f.read()
 
 programming_folders = [Path(programming/f) for f in os.listdir(programming) if Path(programming/f).is_dir()]
