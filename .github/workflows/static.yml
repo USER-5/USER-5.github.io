@@ -39,6 +39,8 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Set up ImageMagick
         uses: mfinelli/setup-imagemagick@v5
+      - name: Check ImageMagick
+        run: magick -version && magick identify -list format
       - name: Build Pages
         run: python build.py
       - name: Setup Pages
