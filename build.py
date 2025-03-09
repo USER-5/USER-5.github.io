@@ -6,6 +6,7 @@ from subprocess import call
 from glob import glob
 from urllib.parse import quote
 import sys
+import yaml
 
 # I'm going to try to keep this to assembling files by concatenation
 # Let's see how that goes...
@@ -34,11 +35,15 @@ with open(photos / "container.html") as f:
     photos_page = f.read()
 
 def is_valid_photo_date_folder(photo_date_folder: Path):
-    return os.path.isdir(photo_date_folder) and os.path.isfile(photo_date_folder / "article.html")
+    return os.path.isdir(photo_date_folder) and (os.path.isfile(photo_date_folder / "article.html") or os.path.isfile(photo_date_folder / "article.yaml"))
 
 photo_date_folders = [Path(photos/f) for f in os.listdir(photos) if is_valid_photo_date_folder(photos / f)]
 photo_date_folders.sort()
 photo_date_folders.reverse()
+
+yaml_template = ""
+with open(photos / "template.html") as f:
+    yaml_template = f.read()
 
 photos_page_content = ''
 for photo_date_folder in photo_date_folders:
@@ -50,11 +55,20 @@ for photo_date_folder in photo_date_folders:
         print(f"  Converting image {image}")
         call([this_script / 'prepare_images.sh',  image, destination / "images"])
 
-    print("  Reading article")
-    with open(photo_date_folder / "article.html") as f:
-        photos_page_content += "<article>"
-        photos_page_content += f.read()
-        photos_page_content += "</article>"
+    if (photo_date_folder / "article.yaml").exists():
+        print("  Reading json article")
+        with open(photo_date_folder / "article.yaml", "r") as f:
+            yaml_content = yaml.safe_load(f)
+        for image_details in yaml_content:
+            image_html = yaml_template.replace("{{filename}}", image_details["filename"])
+            image_html = image_html.replace("{{alt}}", image_details["alt"])
+            image_html = image_html.replace("{{orientation}}", image_details["orientation"])
+            photos_page_content += image_html
+
+    else:
+        print("  Reading legacy article")
+        with open(photo_date_folder / "article.html") as f:
+            photos_page_content += f.read()
 
 photos_page = photos_page.replace("<!-- !!Content!! -->", photos_page_content)
 
