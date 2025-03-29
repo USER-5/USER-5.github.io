@@ -35,7 +35,7 @@ with open(photos / "container.html") as f:
     photos_page = f.read()
 
 def is_valid_photo_date_folder(photo_date_folder: Path):
-    return os.path.isdir(photo_date_folder) and (os.path.isfile(photo_date_folder / "article.html") or os.path.isfile(photo_date_folder / "article.yaml"))
+    return os.path.isdir(photo_date_folder) and os.path.isfile(photo_date_folder / "article.yaml")
 
 photo_date_folders = [Path(photos/f) for f in os.listdir(photos) if is_valid_photo_date_folder(photos / f)]
 photo_date_folders.sort()
@@ -55,22 +55,17 @@ for photo_date_folder in photo_date_folders:
         print(f"  Converting image {image}")
         call([this_script / 'prepare_images.sh',  image, destination / "images"])
 
-    if (photo_date_folder / "article.yaml").exists():
-        print("  Reading json article")
-        with open(photo_date_folder / "article.yaml", "r") as f:
-            yaml_content = yaml.safe_load(f)
-        for image_details in yaml_content:
-            image_html = yaml_template.replace("{{filename}}", image_details["filename"])
-            image_html = image_html.replace("{{alt}}", image_details["alt"])
-            image_html = image_html.replace("{{orientation}}", image_details["orientation"])
-            photos_page_content += image_html
+    print("  Reading article")
+    with open(photo_date_folder / "article.yaml", "r") as f:
+        yaml_content = yaml.safe_load(f)
+    for image_details in yaml_content:
+        image_html = yaml_template.replace("{{filename}}", image_details["filename"])
+        image_html = image_html.replace("{{alt}}", image_details["alt"])
+        image_html = image_html.replace("{{orientation}}", image_details["orientation"])
+        photos_page_content += image_html
 
-    else:
-        print("  Reading legacy article")
-        with open(photo_date_folder / "article.html") as f:
-            photos_page_content += f.read()
 
-photos_page = photos_page.replace("<!-- !!Content!! -->", photos_page_content)
+photos_page = photos_page.replace("{{content}}", photos_page_content)
 
 print("Writing photos page")
 with open(destination / "photos.html", "w+") as f:
@@ -100,14 +95,14 @@ for programming_folder in programming_folders:
             programming_page_content += "<article>"
             programming_page_content += f.read()
             programming_page_content += "</article>"
-    programming_page_content = programming_page.replace("<!-- !!Content!! -->", programming_page_content)
+    programming_page_content = programming_page.replace("{{content}}", programming_page_content)
 
     print("  Writing article page")
     with open(str(destination) + article_filepath, "w+") as f:
         f.write(programming_page_content)
 
 programming_index_content += '</ul>'
-programming_index_page = programming_page.replace("<!-- !!Content!! -->", programming_index_content)
+programming_index_page = programming_page.replace("{{content}}", programming_index_content)
 
 print("Writing article page")
 with open(destination / "programming.html", "w+") as f:
