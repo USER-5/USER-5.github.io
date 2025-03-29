@@ -46,6 +46,7 @@ with open(photos / "template.html") as f:
     yaml_template = f.read()
 
 photos_page_content = ''
+photo_page_num = 0
 for photo_date_folder in photo_date_folders:
     print(f" Processing {photo_date_folder}")
     for image in glob(f"{photo_date_folder}/images/*.jpg"):
@@ -62,10 +63,17 @@ for photo_date_folder in photo_date_folders:
         image_html = yaml_template.replace("{{filename}}", image_details["filename"])
         image_html = image_html.replace("{{alt}}", image_details["alt"])
         image_html = image_html.replace("{{orientation}}", image_details["orientation"])
-        photos_page_content += image_html
+        image_html = image_html.replace("{{next_page}}", str(photo_page_num + 1))
 
+        # If it's the first image, preload it into the window.
+        # I could do two images, but most times the first is all you see on initial load anyway
+        if(photo_page_num == 0):
+            photos_page = photos_page.replace("{{content}}", image_html)
+        else:
+            with open(destination/f"photos-{photo_page_num}.html", "w+") as f:
+                f.write(image_html)
 
-photos_page = photos_page.replace("{{content}}", photos_page_content)
+        photo_page_num = photo_page_num + 1
 
 print("Writing photos page")
 with open(destination / "photos.html", "w+") as f:

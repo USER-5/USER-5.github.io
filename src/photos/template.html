@@ -1,19 +1,25 @@
-<img
-  src="/images/{{filename}}-650.webp"
-  srcset="
-    /images/{{filename}}-400.webp   400w,
-    /images/{{filename}}-650.webp   650w,
-    /images/{{filename}}-700.webp   700w,
-    /images/{{filename}}-800.webp   800w,
-    /images/{{filename}}-800.webp   850w,
-    /images/{{filename}}-900.webp   900w,
-    /images/{{filename}}-1000.webp 1000w,
-    /images/{{filename}}-1200.webp 1200w,
-    /images/{{filename}}-1300.webp 1300w,
-    /images/{{filename}}-1950.webp 1950w
-  "
-  sizes="(min-width:670px) 650px, 100vw"
-  alt="{{alt}}"
-  class="{{orientation}}"
-/>
-<a href="/images/{{filename}}.jpg">Full resolution of above</a>
+<div
+  hx-get="/photos-{{next_page}}.html"
+  hx-trigger="revealed"
+  hx-swap="afterend"
+  >
+  <img
+    src="/images/{{filename}}-650.webp"
+    srcset="
+      /images/{{filename}}-400.webp   400w,
+      /images/{{filename}}-650.webp   650w,
+      /images/{{filename}}-700.webp   700w,
+      /images/{{filename}}-800.webp   800w,
+      /images/{{filename}}-800.webp   850w,
+      /images/{{filename}}-900.webp   900w,
+      /images/{{filename}}-1000.webp 1000w,
+      /images/{{filename}}-1200.webp 1200w,
+      /images/{{filename}}-1300.webp 1300w,
+      /images/{{filename}}-1950.webp 1950w
+    "
+    sizes="(min-width:670px) 650px, 100vw"
+    alt="{{alt}}"
+    class="{{orientation}}"
+  />
+  <a href="/images/{{filename}}.jpg">Full resolution of above</a>
+</div>
