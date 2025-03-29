@@ -14,6 +14,6 @@ fi
 
 cp "$filename" "$destination"
 
-for maxwidth in 650 1300 1950; do
+for maxwidth in 325 650 1300 1950; do
 	magick "$filename" -auto-orient -resize "${maxwidth}x" -quality 90 "$destination/$basefilename-$maxwidth".webp
 done
