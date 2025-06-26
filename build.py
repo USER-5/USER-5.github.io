@@ -60,7 +60,7 @@ for photo_date_folder in photo_date_folders:
     with open(photo_date_folder / "article.yaml", "r") as f:
         yaml_content = yaml.safe_load(f)
     for image_details in yaml_content:
-        image_html = yaml_template.replace("{{filename}}", image_details["filename"])
+        image_html = yaml_template.replace("{{filename}}", str(image_details["filename"]))
         image_html = image_html.replace("{{alt}}", image_details["alt"])
         image_html = image_html.replace("{{orientation}}", image_details["orientation"])
         image_html = image_html.replace("{{next_page}}", str(photo_page_num + 1))
